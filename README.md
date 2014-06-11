@@ -23,3 +23,4 @@ For a splash-page open Wifi hotspot based on:
     `opkg install nodogsplash`
 * edit nodogsplash config
 * edit splash page
+* change uhttpd port (for webadmin) to 8080

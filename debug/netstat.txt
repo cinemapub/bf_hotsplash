@@ -1,0 +1,10 @@
+###################################
+# RESULT OF "netstat -l -t -p -n"
+###################################
+
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 192.168.1.1:2050        0.0.0.0:*               LISTEN      27573/nodogsplash
+tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      8184/uhttpd
+tcp        0      0 0.0.0.0:53              0.0.0.0:*               LISTEN      1385/dnsmasq
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1332/dropbear

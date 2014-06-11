@@ -1,0 +1,101 @@
+###################################
+# RESULT OF "iptables --list-rules"
+###################################
+-P INPUT ACCEPT
+-P FORWARD DROP
+-P OUTPUT ACCEPT
+-N forward
+-N forwarding_lan
+-N forwarding_rule
+-N forwarding_wan
+-N input
+-N input_lan
+-N input_rule
+-N input_wan
+-N ndsAUT
+-N ndsNET
+-N ndsRTR
+-N ndsTRT
+-N ndsTRU
+-N output
+-N output_rule
+-N reject
+-N syn_flood
+-N zone_lan
+-N zone_lan_ACCEPT
+-N zone_lan_DROP
+-N zone_lan_REJECT
+-N zone_lan_forward
+-N zone_wan
+-N zone_wan_ACCEPT
+-N zone_wan_DROP
+-N zone_wan_REJECT
+-N zone_wan_forward
+-A INPUT -i br-lan -j ndsRTR
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j syn_flood
+-A INPUT -j input_rule
+-A INPUT -j input
+-A FORWARD -i br-lan -j ndsNET
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -j forwarding_rule
+-A FORWARD -j forward
+-A FORWARD -j reject
+-A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+-A OUTPUT -j output_rule
+-A OUTPUT -j output
+-A forward -i br-lan -j zone_lan_forward
+-A forward -i eth0.2 -j zone_wan_forward
+-A input -i br-lan -j zone_lan
+-A input -i eth0.2 -j zone_wan
+-A ndsAUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A ndsAUT -j ACCEPT
+-A ndsAUT -j REJECT --reject-with icmp-port-unreachable
+-A ndsNET -m mark --mark 0x100/0x700 -j DROP
+-A ndsNET -m state --state INVALID -j DROP
+-A ndsNET -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+-A ndsNET -m mark --mark 0x200/0x700 -j ACCEPT
+-A ndsNET -m mark --mark 0x400/0x700 -j ndsAUT
+-A ndsNET -p tcp -m tcp --dport 53 -j ACCEPT
+-A ndsNET -p udp -m udp --dport 53 -j ACCEPT
+-A ndsNET -p tcp -m tcp --dport 8080 -j ACCEPT
+-A ndsNET -j REJECT --reject-with icmp-port-unreachable
+-A ndsRTR -m mark --mark 0x100/0x700 -j DROP
+-A ndsRTR -m state --state INVALID -j DROP
+-A ndsRTR -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A ndsRTR -p tcp -m tcp ! --tcp-option 2 --tcp-flags SYN SYN -j DROP
+-A ndsRTR -p tcp -m tcp --dport 2050 -j ACCEPT
+-A ndsRTR -m mark --mark 0x200/0x700 -j ACCEPT
+-A ndsRTR -j ACCEPT
+-A ndsRTR -j REJECT --reject-with icmp-port-unreachable
+-A output -j zone_lan_ACCEPT
+-A output -j zone_wan_ACCEPT
+-A reject -p tcp -j REJECT --reject-with tcp-reset
+-A reject -j REJECT --reject-with icmp-port-unreachable
+-A syn_flood -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m limit --limit 25/sec --limit-burst 50 -j RETURN
+-A syn_flood -j DROP
+-A zone_lan -j input_lan
+-A zone_lan -j zone_lan_ACCEPT
+-A zone_lan_ACCEPT -o br-lan -j ACCEPT
+-A zone_lan_ACCEPT -i br-lan -j ACCEPT
+-A zone_lan_DROP -o br-lan -j DROP
+-A zone_lan_DROP -i br-lan -j DROP
+-A zone_lan_REJECT -o br-lan -j reject
+-A zone_lan_REJECT -i br-lan -j reject
+-A zone_lan_forward -j zone_wan_ACCEPT
+-A zone_lan_forward -j forwarding_lan
+-A zone_lan_forward -j zone_lan_REJECT
+-A zone_wan -p udp -m udp --dport 68 -j ACCEPT
+-A zone_wan -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A zone_wan -j input_wan
+-A zone_wan -j zone_wan_REJECT
+-A zone_wan_ACCEPT -o eth0.2 -j ACCEPT
+-A zone_wan_ACCEPT -i eth0.2 -j ACCEPT
+-A zone_wan_DROP -o eth0.2 -j DROP
+-A zone_wan_DROP -i eth0.2 -j DROP
+-A zone_wan_REJECT -o eth0.2 -j reject
+-A zone_wan_REJECT -i eth0.2 -j reject
+-A zone_wan_forward -j forwarding_wan
+-A zone_wan_forward -j zone_wan_REJECT
