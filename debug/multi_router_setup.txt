@@ -1,0 +1,40 @@
+Multi-Hotspot setup with 3G backup
+
+
+(1) TP-LINK TL-MR3420 with 4G dongle
+
+(2) TP-LINK TL-WDR4300 with OpenWrt/NoDogSplash 
+
+(3) TP-LINK TL-WDR4300 with OpenWrt/NoDogSplash 
+
+
+Broadband setup (default):
+			
+				(broadband)
+			 _____x_____ 
+			|			|WAN (DHCP)
+			|	 (1)	|Private Wifi
+			|__x_x_x_x__|LAN (192.168.0.*)
+			   |
+			    \
+			     \
+			 _____x_____ 
+			|			|WAN (DHCP)
+			|   (2/3)	|Hotspot
+			|__x_x_x_x__|LAN (192.168.1.*)
+
+			
+3G/4G backup:
+				3G dongle (HDCP)
+			 _____x_____ 
+			|			|WAN -
+			|	 (1)	|Private Wifi
+			|__x_x_x_x__|LAN (192.168.0.*)
+			   |
+			    \
+			     \
+			 _____x_____ 
+			|			|WAN (DHCP)
+			|   (2/3)	|Hotspot
+			|__x_x_x_x__|LAN (192.168.1.*)
+			
